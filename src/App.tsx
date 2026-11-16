@@ -1,6 +1,6 @@
-import { ListChecks, PiggyBank, Route as RouteIcon, ScrollText, Settings, Sun, Timer } from "lucide-react";
+import { Download, ListChecks, PiggyBank, Route as RouteIcon, ScrollText, Settings, Sun, Timer } from "lucide-react";
 import { useState } from "react";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import { BackupBanner } from "@/components/BackupBanner";
 import { FocusView } from "@/components/FocusView";
 import { FundsView } from "@/components/FundsView";
@@ -10,6 +10,7 @@ import { SettingsModal } from "@/components/SettingsModal";
 import { Taegeuk } from "@/components/Taegeuk";
 import { TasksView } from "@/components/TasksView";
 import { TodayView } from "@/components/TodayView";
+import { useInstallPrompt } from "@/hooks/use-install-prompt";
 import type { ViewId } from "@/lib/types";
 
 const VIEWS: { id: ViewId; num: string; label: string; icon: typeof Sun }[] = [
@@ -24,6 +25,7 @@ const VIEWS: { id: ViewId; num: string; label: string; icon: typeof Sun }[] = [
 export default function App() {
   const [view, setView] = useState<ViewId>("today");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const { isInstallable, promptInstall } = useInstallPrompt();
 
   return (
     <div className="min-h-100dvh pb-24 md:pb-0">
@@ -57,6 +59,20 @@ export default function App() {
                 </button>
               ))}
             </nav>
+
+            {isInstallable && (
+              <button
+                onClick={async () => {
+                  const accepted = await promptInstall();
+                  if (accepted) toast.success("Seoulbound '28 installed to device!");
+                }}
+                title="Install App to Device"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1.5 text-xs font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Install</span>
+              </button>
+            )}
 
             <button
               onClick={() => setSettingsOpen(true)}

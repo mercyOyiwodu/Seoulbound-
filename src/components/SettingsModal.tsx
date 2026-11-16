@@ -6,11 +6,13 @@ import {
   FileSpreadsheet,
   FileText,
   RotateCcw,
+  Smartphone,
   Upload,
   X,
 } from "lucide-react";
 import { daysSince } from "@/lib/backup";
 import { fmtDate } from "@/lib/data";
+import { useInstallPrompt } from "@/hooks/use-install-prompt";
 import { useStore } from "@/lib/store";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -39,6 +41,8 @@ export function SettingsModal({ open, onClose }: Props) {
     updateTargetDate,
     resetAllData,
   } = useStore();
+
+  const { isInstallable, isInstalled, isIOS, promptInstall } = useInstallPrompt();
 
   const [importMode, setImportMode] = useState<"replace" | "merge">("merge");
   const [fileContent, setFileContent] = useState<string | null>(null);
@@ -247,10 +251,52 @@ export function SettingsModal({ open, onClose }: Props) {
             </div>
           </section>
 
-          {/* Section 2: Import & Restore */}
+          {/* Section 2: PWA Installation & Offline Mode */}
+          <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                2. Install App to Device (PWA)
+              </h3>
+              <Smartphone className="h-4 w-4 text-primary" />
+            </div>
+            <p className="text-xs font-semibold text-muted-foreground">
+              Install Seoulbound &rsquo;28 on your phone or computer to use it offline like a native app, right from your home screen.
+            </p>
+
+            {isInstalled ? (
+              <div className="flex items-center gap-2 rounded-xl bg-primary/10 p-3 text-xs font-bold text-primary">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>App is installed and running in standalone offline mode!</span>
+              </div>
+            ) : isInstallable ? (
+              <button
+                onClick={async () => {
+                  const accepted = await promptInstall();
+                  if (accepted) toast.success("App installed successfully!");
+                }}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground transition-transform hover:scale-105"
+              >
+                <Smartphone className="h-4 w-4" /> Install to Home Screen
+              </button>
+            ) : isIOS ? (
+              <div className="rounded-xl border border-border bg-secondary/40 p-3 text-xs font-semibold text-muted-foreground">
+                <p className="font-bold text-foreground">To install on iPhone or iPad:</p>
+                <p className="mt-1">
+                  1. Tap the <strong>Share</strong> button (box with upward arrow ⎋) at the bottom of Safari.
+                </p>
+                <p>2. Scroll down and tap <strong>&ldquo;Add to Home Screen&rdquo;</strong> (➕).</p>
+              </div>
+            ) : (
+              <p className="text-xs font-semibold text-muted-foreground">
+                To install on your browser, click the install icon in your address bar or browser menu (<strong>&ldquo;Install Seoulbound &rsquo;28&rdquo;</strong>).
+              </p>
+            )}
+          </section>
+
+          {/* Section 3: Import & Restore */}
           <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
             <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
-              2. Restore / Import Data
+              3. Restore / Import Data
             </h3>
             <p className="text-xs font-semibold text-muted-foreground">
               Upload a previously downloaded <code>.json</code> backup to restore or transfer records to this device.
@@ -317,10 +363,10 @@ export function SettingsModal({ open, onClose }: Props) {
             )}
           </section>
 
-          {/* Section 3: Timeline & Dates Settings */}
+          {/* Section 4: Timeline & Dates Settings */}
           <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
             <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
-              3. Runway & Timeline Settings
+              4. Runway & Timeline Settings
             </h3>
             <p className="text-xs font-semibold text-muted-foreground">
               Configure your preparation runway start and the target GKS Embassy Track opening date.
@@ -381,11 +427,11 @@ export function SettingsModal({ open, onClose }: Props) {
             </button>
           </section>
 
-          {/* Section 4: Danger Zone */}
+          {/* Section 5: Danger Zone */}
           <section className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-destructive">Danger Zone: Reset Application Data</h3>
+                <h3 className="text-sm font-bold text-destructive">5. Danger Zone: Reset Application Data</h3>
                 <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
                   Reset tasks, logs, and funds back to initial factory setup.
                 </p>
