@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* warm paper base (from reference palette) */
+    --background: 38 45% 93%; /* #f6efe3 cream */
+    --foreground: 15 12% 18%; /* soft warm charcoal ink */
+    --card: 40 55% 97%; /* lighter cream */
+    --card-foreground: 15 12% 18%;
+    --popover: 40 55% 97%;
+    --popover-foreground: 15 12% 18%;
+    /* sage = primary action / progress */
+    --primary: 168 14% 42%; /* #84A59D sage */
+    --primary-foreground: 40 55% 97%;
+    --secondary: 9 76% 86%; /* #f5cac3 coral */
+    --secondary-foreground: 15 12% 18%;
+    --muted: 36 25% 89%;
+    --muted-foreground: 15 8% 40%;
+    --accent: 40 82% 78%; /* warm yellow star */
+    --accent-foreground: 15 12% 18%;
+    --destructive: 1 79% 73%; /* #f28482 salmon */
+    --destructive-foreground: 15 12% 18%;
+    --border: 32 18% 82%;
+    --input: 32 18% 82%;
+    --ring: 168 14% 42%;
+    --radius: 1.25rem;
+    --sidebar-background: 40 55% 97%;
+    --sidebar-foreground: 15 12% 18%;
+    --sidebar-primary: 168 14% 42%;
+    --sidebar-primary-foreground: 40 55% 97%;
+    --sidebar-accent: 9 76% 86%;
+    --sidebar-accent-foreground: 15 12% 18%;
+    --sidebar-border: 32 18% 82%;
+    --sidebar-ring: 168 14% 42%;
+
+    --font-display: "Dela Gothic One", "Noto Sans KR", system-ui, sans-serif;
+    --font-body: "Manrope", "Noto Sans KR", -apple-system, "Segoe UI", sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  :focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: hsl(var(--secondary));
+  }
+}
+
+@layer utilities {
+  .paper-card {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 1.75rem;
+  }
+
+  .track-korean { --track: 356 65% 58%; --track-soft: 9 76% 90%; }
+  .track-english { --track: 210 45% 48%; --track-soft: 210 60% 90%; }
+  .track-gks { --track: 168 14% 42%; --track-soft: 168 20% 88%; }
+  .track-python { --track: 268 25% 52%; --track-soft: 268 30% 91%; }
+
+  .track-chip {
+    background-color: hsl(var(--track-soft));
+    color: hsl(var(--track));
+  }
+
+  .track-dot {
+    background-color: hsl(var(--track));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
