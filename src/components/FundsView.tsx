@@ -1,4 +1,5 @@
 import { Download, ExternalLink, Plus, Trash2, TrendingDown, TrendingUp } from "lucide-react";
+import { celebrateGoalFunded } from "@/lib/confetti";
 import { cheerFund } from "@/lib/cheer";
 import { fmtMoney } from "@/lib/data";
 import { useStore } from "@/lib/store";
@@ -20,6 +21,18 @@ export function FundsView() {
     if (!val || val <= 0) return;
     addFund(label, type, val);
     cheerFund(type, val, label);
+
+    if (type === "income") {
+      const newBalance = balance + val;
+      const fundedGoal = goals.find((g) => balance < g.target && newBalance >= g.target);
+      if (fundedGoal) {
+        celebrateGoalFunded();
+        toast.success(`🎉 100% FUNDED: ${fundedGoal.label}!`, {
+          description: "시험 등록 자금이 마련되었습니다! 목표 달성을 축하합니다.",
+        });
+      }
+    }
+
     setLabel("");
     setAmount("");
   };

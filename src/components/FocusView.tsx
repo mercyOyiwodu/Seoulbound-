@@ -10,6 +10,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { type AmbientController, type AmbientSoundType, playChime, startAmbientSound } from "@/lib/audio";
+import { celebrateFocusDone } from "@/lib/confetti";
 import { cheerStudyLogged } from "@/lib/cheer";
 import { TRACKS } from "@/lib/data";
 import { useStore } from "@/lib/store";
@@ -101,6 +102,7 @@ export function FocusView() {
     playChime();
 
     if (mode === "focus") {
+      celebrateFocusDone();
       const loggedSubject = subject.trim() || `${selectedTrack.name} Focus Session`;
       addStudy(loggedSubject, track, selectedDuration);
       cheerStudyLogged(selectedDuration, selectedTrack.name, selectedTrack.ko);

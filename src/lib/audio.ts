@@ -50,6 +50,43 @@ export function playChime(): void {
   }
 }
 
+/**
+ * Plays an uplifting, triumphant celebratory fanfare for major scholarship milestones.
+ */
+export function playFanfare(): void {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+
+    // Arpeggiated celebratory notes (C5, E5, G5, C6)
+    const notes = [
+      { freq: 523.25, time: 0.0, dur: 0.6 },
+      { freq: 659.25, time: 0.12, dur: 0.6 },
+      { freq: 783.99, time: 0.24, dur: 0.8 },
+      { freq: 1046.5, time: 0.36, dur: 1.8 },
+    ];
+
+    notes.forEach((note) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(note.freq, now + note.time);
+
+      gain.gain.setValueAtTime(0.16, now + note.time);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + note.time + note.dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now + note.time);
+      osc.stop(now + note.time + note.dur);
+    });
+  } catch (err) {
+    console.warn("Could not play fanfare audio:", err);
+  }
+}
+
 export type AmbientSoundType = "rain" | "whitenoise" | "brownnoise";
 
 export interface AmbientController {
