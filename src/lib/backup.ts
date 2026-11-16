@@ -116,6 +116,7 @@ export function validateBackupJson(rawText: string): { valid: boolean; state?: A
 
     const sanitizedState: AppState = {
       version: typeof candidate.version === "number" ? candidate.version : 1,
+      currency: candidate.currency === "USD" || candidate.currency === "KRW" ? candidate.currency : "NGN",
       projectStartDate: typeof candidate.projectStartDate === "string" ? candidate.projectStartDate : todayISO(),
       targetDate: typeof candidate.targetDate === "string" ? candidate.targetDate : "2027-09-15",
       lastBackupDate: todayISO(),

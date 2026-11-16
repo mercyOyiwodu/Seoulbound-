@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export function FundsView() {
-  const { funds, goals, addFund, deleteFund, updateGoalTarget, exportFundsLedger } = useStore();
+  const { funds, goals, addFund, deleteFund, updateGoalTarget, exportFundsLedger, currency } = useStore();
   const [label, setLabel] = useState("");
   const [type, setType] = useState<"income" | "expense">("income");
   const [amount, setAmount] = useState("");
@@ -34,14 +34,14 @@ export function FundsView() {
       <section className="paper-card p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Current balance</p>
         <p className={`mt-2 font-display text-4xl sm:text-5xl ${balance < 0 ? "text-destructive" : ""}`}>
-          {fmtMoney(balance)}
+          {fmtMoney(balance, currency)}
         </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
-            <TrendingUp className="h-4 w-4 text-primary" /> in {fmtMoney(income)}
+            <TrendingUp className="h-4 w-4 text-primary" /> in {fmtMoney(income, currency)}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <TrendingDown className="h-4 w-4 text-destructive" /> out {fmtMoney(expense)}
+            <TrendingDown className="h-4 w-4 text-destructive" /> out {fmtMoney(expense, currency)}
           </span>
         </div>
         <p className="mt-4 max-w-prose text-sm text-muted-foreground">
@@ -57,8 +57,8 @@ export function FundsView() {
               <p className="text-sm font-bold">{g.label}</p>
               {g.note && <p className="mt-1 text-xs font-semibold text-muted-foreground">{g.note}</p>}
               <p className="mt-3 font-display text-2xl">
-                {fmtMoney(Math.max(0, balance))}{" "}
-                <span className="text-sm text-muted-foreground">/ {fmtMoney(g.target)}</span>
+                {fmtMoney(Math.max(0, balance), currency)}{" "}
+                <span className="text-sm text-muted-foreground">/ {fmtMoney(g.target, currency)}</span>
               </p>
               <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
                 <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${pct}%` }} />
@@ -74,10 +74,10 @@ export function FundsView() {
                     const parsed = parseFloat(e.target.value);
                     if (parsed && parsed > 0) {
                       updateGoalTarget(g.id, parsed);
-                      toast.success(`Updated ${g.label} target to ${fmtMoney(parsed)}`);
+                      toast.success(`Updated ${g.label} target to ${fmtMoney(parsed, currency)}`);
                     }
                   }}
-                  className="w-24 rounded-xl border border-input bg-background px-2 py-1 font-bold outline-none focus:border-primary"
+                  className="w-32 rounded-xl border border-input bg-background px-2 py-1 font-bold outline-none focus:border-primary"
                   aria-label={`${g.label} target`}
                 />
               </label>
@@ -96,7 +96,7 @@ export function FundsView() {
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          placeholder="e.g. Freelance gig / Bus fare"
+          placeholder="e.g. Freelance gig / Study materials"
           className="min-h-11 flex-1 rounded-2xl border border-input bg-background px-4 text-sm font-semibold outline-none placeholder:text-muted-foreground/70 focus:border-primary"
         />
         <select
@@ -111,11 +111,11 @@ export function FundsView() {
         <input
           type="number"
           min={0}
-          step="0.01"
+          step="1"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="0.00"
-          className="min-h-11 w-28 rounded-2xl border border-input bg-background px-4 text-sm font-bold outline-none focus:border-primary"
+          placeholder="Amount"
+          className="min-h-11 w-32 rounded-2xl border border-input bg-background px-4 text-sm font-bold outline-none focus:border-primary"
           aria-label="Amount"
         />
         <button
@@ -166,7 +166,7 @@ export function FundsView() {
                     <p className="text-xs font-semibold text-muted-foreground">{f.date}</p>
                   </div>
                   <span className={`ml-auto shrink-0 font-display text-sm ${f.type === "income" ? "" : "text-destructive"}`}>
-                    {f.type === "income" ? "+" : "−"}{fmtMoney(f.amount)}
+                    {f.type === "income" ? "+" : "−"}{fmtMoney(f.amount, currency)}
                   </span>
                   <button
                     onClick={() => handleDelete(f.id, f.label)}
@@ -185,8 +185,8 @@ export function FundsView() {
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Free while broke</p>
         <ul className="mt-3 space-y-2 text-sm font-semibold">
           <li>
-            <a className="inline-flex items-center gap-1 text-primary hover:underline" href="https://www.britishcouncil.org" target="_blank" rel="noreferrer">
-              British Council — free IELTS practice tests <ExternalLink className="h-3.5 w-3.5" />
+            <a className="inline-flex items-center gap-1 text-primary hover:underline" href="https://www.britishcouncil.org.ng" target="_blank" rel="noreferrer">
+              British Council Nigeria — IELTS Academic information <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </li>
           <li>
@@ -195,8 +195,13 @@ export function FundsView() {
             </a>
           </li>
           <li>
+            <a className="inline-flex items-center gap-1 text-primary hover:underline" href="https://overseas.mofa.go.kr/ng-en/index.do" target="_blank" rel="noreferrer">
+              Embassy of the Republic of Korea in Abuja, Nigeria <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </li>
+          <li>
             <a className="inline-flex items-center gap-1 text-primary hover:underline" href="https://www.studyinkorea.go.kr" target="_blank" rel="noreferrer">
-              Study in Korea — GKS notice board (check weekly) <ExternalLink className="h-3.5 w-3.5" />
+              Study in Korea — GKS official notice board (check weekly) <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </li>
         </ul>

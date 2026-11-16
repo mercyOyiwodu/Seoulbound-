@@ -29,6 +29,8 @@ export function SettingsModal({ open, onClose }: Props) {
     lastBackupDate,
     projectStartDate,
     targetDate,
+    currency,
+    setCurrency,
     exportBackup,
     exportStudyLog,
     exportFundsLedger,
@@ -324,7 +326,28 @@ export function SettingsModal({ open, onClose }: Props) {
               Configure your preparation runway start and the target GKS Embassy Track opening date.
             </p>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label className="block text-xs font-bold text-muted-foreground">
+                  Currency Format
+                </label>
+                <select
+                  value={currency}
+                  onChange={(e) => {
+                    const c = e.target.value as "NGN" | "USD" | "KRW";
+                    setCurrency(c);
+                    toast.success(
+                      `Currency set to ${c === "NGN" ? "Nigerian Naira (₦)" : c === "KRW" ? "Korean Won (₩)" : "US Dollar ($)"}`
+                    );
+                  }}
+                  className="mt-1 min-h-10 w-full cursor-pointer rounded-xl border border-input bg-background px-3 text-xs font-bold outline-none focus:border-primary"
+                >
+                  <option value="NGN">₦ NGN (Nigerian Naira)</option>
+                  <option value="USD">$ USD (US Dollar)</option>
+                  <option value="KRW">₩ KRW (Korean Won)</option>
+                </select>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-muted-foreground">
                   Runway Start Date

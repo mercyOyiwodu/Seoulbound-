@@ -3,6 +3,19 @@
   "private": true,
   "version": "1.0.0",
   "description": "Seoulbound '28 — GKS Study Command Center: Korean, TOPIK, IELTS, and Python/ML",
+  "author": "GKS Applicant (Nigeria)",
+  "license": "MIT",
+  "keywords": [
+    "gks",
+    "global-korea-scholarship",
+    "topik",
+    "ielts",
+    "study-command-center",
+    "pwa",
+    "nigeria-gks",
+    "react",
+    "typescript"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

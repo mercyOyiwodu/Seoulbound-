@@ -1,5 +1,7 @@
 export type TrackId = "korean" | "english" | "gks" | "python";
 
+export type CurrencyCode = "NGN" | "USD" | "KRW";
+
 export interface Milestone {
   id: string;
   track: TrackId;
@@ -52,6 +54,7 @@ export type ViewId = "today" | "roadmap" | "tasks" | "log" | "funds";
 
 export interface AppState {
   version: number;
+  currency: CurrencyCode;
   projectStartDate: string; // YYYY-MM-DD
   targetDate: string; // YYYY-MM-DD
   lastBackupDate: string | null; // ISO YYYY-MM-DD

@@ -6,7 +6,7 @@ import {
   validateBackupJson,
 } from "./backup";
 import { DEFAULT_GOALS, DEFAULT_TASKS, GKS_WINDOW_OPEN, todayISO, uid } from "./data";
-import type { AppState, FundEntry, StudyEntry, Task } from "./types";
+import type { AppState, CurrencyCode, FundEntry, StudyEntry, Task } from "./types";
 
 interface Store extends AppState {
   addTask: (title: string, track: Task["track"]) => void;
@@ -24,6 +24,7 @@ interface Store extends AppState {
   importBackup: (jsonText: string, mode: "replace" | "merge") => { success: boolean; error?: string };
   updateProjectStartDate: (date: string) => void;
   updateTargetDate: (date: string) => void;
+  setCurrency: (currency: CurrencyCode) => void;
   snoozeBackupReminder: (days?: number) => void;
   resetAllData: () => void;
   activityDates: Set<string>;
@@ -37,6 +38,7 @@ function seed(): AppState {
   const created = todayISO();
   return {
     version: 1,
+    currency: "NGN",
     projectStartDate: created,
     targetDate: GKS_WINDOW_OPEN,
     lastBackupDate: null,
@@ -54,8 +56,15 @@ function sanitizeLoadedState(raw: unknown): AppState {
   const obj = raw as Partial<AppState>;
   const base = seed();
 
+  // If old state had dollar goals (< 1000 for IELTS), upgrade to realistic Nigerian Naira targets
+  let goals = Array.isArray(obj.goals) && obj.goals.length ? obj.goals : base.goals;
+  if (goals.some((g) => g.id === "ielts" && g.target <= 1000)) {
+    goals = DEFAULT_GOALS;
+  }
+
   return {
     version: typeof obj.version === "number" ? obj.version : 1,
+    currency: obj.currency === "USD" || obj.currency === "KRW" ? obj.currency : "NGN",
     projectStartDate: typeof obj.projectStartDate === "string" && obj.projectStartDate ? obj.projectStartDate : base.projectStartDate,
     targetDate: typeof obj.targetDate === "string" && obj.targetDate ? obj.targetDate : base.targetDate,
     lastBackupDate: typeof obj.lastBackupDate === "string" ? obj.lastBackupDate : null,
@@ -63,7 +72,7 @@ function sanitizeLoadedState(raw: unknown): AppState {
     tasks: Array.isArray(obj.tasks) ? obj.tasks : base.tasks,
     study: Array.isArray(obj.study) ? obj.study : [],
     funds: Array.isArray(obj.funds) ? obj.funds : [],
-    goals: Array.isArray(obj.goals) && obj.goals.length ? obj.goals : base.goals,
+    goals,
     doneMilestones: Array.isArray(obj.doneMilestones) ? obj.doneMilestones : [],
   };
 }
@@ -72,7 +81,6 @@ function load(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Check if fallback snapshot exists before assuming empty state
       const snapshot = localStorage.getItem(SNAPSHOT_KEY);
       if (snapshot) {
         try {
@@ -271,6 +279,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, targetDate: date }));
   }, []);
 
+  const setCurrency = useCallback((currency: CurrencyCode) => {
+    setState((s) => ({ ...s, currency }));
+  }, []);
+
   const snoozeBackupReminder = useCallback((days = 7) => {
     const d = new Date();
     d.setDate(d.getDate() + days);
@@ -310,6 +322,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       importBackup,
       updateProjectStartDate,
       updateTargetDate,
+      setCurrency,
       snoozeBackupReminder,
       resetAllData,
       activityDates,
@@ -332,6 +345,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       importBackup,
       updateProjectStartDate,
       updateTargetDate,
+      setCurrency,
       snoozeBackupReminder,
       resetAllData,
       activityDates,

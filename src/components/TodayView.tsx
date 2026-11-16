@@ -30,7 +30,7 @@ function minutesThisWeek(study: { date: string; minutes: number }[]): number {
 }
 
 export function TodayView({ go }: { go: (v: ViewId) => void }) {
-  const { tasks, toggleTask, streak, study, funds, doneMilestones, projectStartDate, targetDate } = useStore();
+  const { tasks, toggleTask, streak, study, funds, doneMilestones, projectStartDate, targetDate, currency } = useStore();
 
   const days = daysUntil(targetDate);
 
@@ -106,7 +106,7 @@ export function TodayView({ go }: { go: (v: ViewId) => void }) {
         {[
           { icon: Flame, label: "Day streak", value: `${streak}`, cls: "track-korean" },
           { icon: Timer, label: "Study this week", value: `${minutesThisWeek(study)} min`, cls: "track-english" },
-          { icon: PiggyBank, label: "Funds balance", value: fmtMoney(balance), cls: "track-gks" },
+          { icon: PiggyBank, label: "Funds balance", value: fmtMoney(balance, currency), cls: "track-gks" },
           { icon: Route, label: "Milestones", value: `${msPct}%`, cls: "track-python" },
         ].map(({ icon: Icon, label, value, cls }) => (
           <div key={label} className={`paper-card ${cls} p-4`}>

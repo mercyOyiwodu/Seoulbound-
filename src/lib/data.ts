@@ -1,4 +1,4 @@
-import type { FundGoal, Milestone, Task, Track } from "./types";
+import type { CurrencyCode, FundGoal, Milestone, Task, Track } from "./types";
 
 export const APP_NAME = "Seoulbound '28";
 export const GKS_WINDOW_OPEN = "2027-09-15"; // expected embassy-track open (2027 cycle: Sep 15-30)
@@ -47,12 +47,12 @@ export const MILESTONES: Milestone[] = [
   { id: "e3", track: "english", label: "Book IELTS Academic", date: "2027-06-30" },
   { id: "e4", track: "english", label: "Sit IELTS — target Band 6.0+", date: "2027-08-31" },
   { id: "e5", track: "english", label: "Draft personal statement in English", date: "2027-05-31" },
-  // 장학금 → GKS
-  { id: "g1", track: "gks", label: "Passport ready + civil documents gathered", date: "2027-02-28" },
-  { id: "g2", track: "gks", label: "Request 2 recommendation letters", date: "2027-06-30" },
+  // 장학금 → GKS (Embassy Track Nigeria: Abuja)
+  { id: "g1", track: "gks", label: "Passport ready + civil documents gathered (Nigeria)", date: "2027-02-28", note: "National e-Passport & Birth Cert from NPC" },
+  { id: "g2", track: "gks", label: "Request 2 academic recommendation letters", date: "2027-06-30", note: "Signed and sealed on the envelope flap" },
   { id: "g3", track: "gks", label: "Personal statement + study plan final draft", date: "2027-07-31" },
-  { id: "g4", track: "gks", label: "Notarization / apostille + translations done", date: "2027-08-31" },
-  { id: "g5", track: "gks", label: "Embassy Track window opens (expected ~Sep 15-30)", date: "2027-09-15", note: "Confirm on studyinkorea.go.kr" },
+  { id: "g4", track: "gks", label: "Legalization: MoE, MFA & Embassy of Korea Abuja", date: "2027-08-31", note: "Federal Secretariat & Maitama Abuja" },
+  { id: "g5", track: "gks", label: "Embassy Track window opens (expected ~Sep 15-30)", date: "2027-09-15", note: "Confirm on studyinkorea.go.kr & Embassy notices" },
   { id: "g6", track: "gks", label: "Backup: University Track (Sep-Nov 2027)", date: "2027-09-01" },
   // 코딩 → Python/ML
   { id: "p1", track: "python", label: "Python fluency: pandas, numpy, matplotlib", date: "2027-01-31" },
@@ -74,9 +74,16 @@ export const DEFAULT_TASKS: Omit<Task, "id" | "createdAt">[] = [
 ];
 
 export const DEFAULT_GOALS: FundGoal[] = [
-  { id: "ielts", label: "IELTS Academic fee", target: 250, note: "Typical range $215-310 depending on country" },
-  { id: "topik", label: "TOPIK exam fee", target: 40, note: "Usually $20-40 depending on centre" },
+  { id: "ielts", label: "IELTS Academic fee (British Council Nigeria)", target: 280000, note: "Typical Nigerian test fee ~₦260,000–₦300,000" },
+  { id: "topik", label: "TOPIK exam fee (KCCN Abuja)", target: 20000, note: "Korean Cultural Centre Nigeria, Rivers House, Abuja" },
+  { id: "legalization", label: "Document Legalization & Police Clearance", target: 60000, note: "MoE, MFA Abuja & Korean Embassy Consular Section" },
 ];
+
+export const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
+  NGN: "₦",
+  USD: "$",
+  KRW: "₩",
+};
 
 export const PHRASES: { ko: string; en: string }[] = [
   { ko: "할 수 있어요", en: "You can do it." },
@@ -106,8 +113,9 @@ export function fmtDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
-export function fmtMoney(n: number): string {
-  return "$" + Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+export function fmtMoney(n: number, currency: CurrencyCode = "NGN"): string {
+  const symbol = CURRENCY_SYMBOLS[currency] || "₦";
+  return symbol + Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 
 export function uid(): string {
