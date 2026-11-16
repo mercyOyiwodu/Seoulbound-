@@ -1,4 +1,5 @@
 import { Download, ExternalLink, Plus, Trash2, TrendingDown, TrendingUp } from "lucide-react";
+import { cheerFund } from "@/lib/cheer";
 import { fmtMoney } from "@/lib/data";
 import { useStore } from "@/lib/store";
 import { useState } from "react";
@@ -16,8 +17,9 @@ export function FundsView() {
 
   const submit = () => {
     const val = parseFloat(amount);
+    if (!val || val <= 0) return;
     addFund(label, type, val);
-    toast.success(`Logged ${type}: ${fmtMoney(val)} (${label})`);
+    cheerFund(type, val, label);
     setLabel("");
     setAmount("");
   };
@@ -121,7 +123,7 @@ export function FundsView() {
           disabled={!label.trim() || !parseFloat(amount)}
           className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-sm font-bold text-primary-foreground transition-transform duration-200 hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <Plus className="h-4 w-4" strokeWidth={3} /> Add
+          <Plus className="h-4 w-4" strokeWidth={3} /> Add Entry
         </button>
       </form>
 

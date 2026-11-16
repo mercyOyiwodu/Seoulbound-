@@ -29,4 +29,10 @@ export default defineConfig([
       'react-hooks/purity': 'off',
     },
   },
+  {
+    files: ['src/components/ui/**', 'src/lib/**'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

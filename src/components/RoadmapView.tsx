@@ -1,8 +1,8 @@
 import { RoundCheck } from "@/components/RoundCheck";
+import { cheerMilestone } from "@/lib/cheer";
 import { MILESTONES, TRACKS, fmtDate } from "@/lib/data";
 import { useStore } from "@/lib/store";
 import type { Track } from "@/lib/types";
-import { toast } from "sonner";
 
 function TrackCard({ track }: { track: Track }) {
   const { doneMilestones, toggleMilestone } = useStore();
@@ -13,9 +13,7 @@ function TrackCard({ track }: { track: Track }) {
   const handleToggle = (id: string, label: string, isDone: boolean) => {
     toggleMilestone(id);
     if (!isDone) {
-      toast.success(`Milestone achieved: ${label}`, {
-        description: `Track: ${track.name} (${track.ko}) · Closer to Seoul!`,
-      });
+      cheerMilestone(label, track.name);
     }
   };
 
@@ -69,7 +67,7 @@ export function RoadmapView() {
   return (
     <div className="space-y-6">
       <p className="max-w-prose text-sm text-muted-foreground">
-        Four tracks, one destination. Check milestones off as you go — progress is saved on this device.
+        Four tracks, one destination. Check milestones off as you go — progress is saved securely on this device.
       </p>
       <div className="flex flex-wrap gap-2">
         {TRACKS.map((t) => (
