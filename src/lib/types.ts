@@ -50,7 +50,7 @@ export interface Track {
   blurb: string;
 }
 
-export type ViewId = "today" | "roadmap" | "tasks" | "log" | "funds";
+export type ViewId = "today" | "focus" | "roadmap" | "tasks" | "log" | "funds";
 
 export interface AppState {
   version: number;

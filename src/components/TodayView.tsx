@@ -1,4 +1,4 @@
-import { ArrowRight, Flame, PiggyBank, Route, Timer } from "lucide-react";
+import { ArrowRight, Flame, PiggyBank, Route, Sparkles, Timer } from "lucide-react";
 import { RoundCheck } from "@/components/RoundCheck";
 import { MILESTONES, PHRASES, TRACKS, daysUntil, fmtDate, fmtMoney } from "@/lib/data";
 import { useStore } from "@/lib/store";
@@ -93,6 +93,14 @@ export function TodayView({ go }: { go: (v: ViewId) => void }) {
               You failed the 2027 round. That was rehearsal. {pct}% of your runway is behind you ({elapsedDays} of{" "}
               {totalDays} days) — keep walking.
             </p>
+            <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2">
+              <button
+                onClick={() => go("focus")}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition-transform duration-200 hover:scale-105"
+              >
+                <Sparkles className="h-4 w-4" /> Enter Focus Room (집중실)
+              </button>
+            </div>
           </div>
         </div>
         <div className="border-t border-border bg-secondary/60 px-6 py-5 sm:px-8">

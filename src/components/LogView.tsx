@@ -12,7 +12,7 @@ import { Download, Plus, Trash2 } from "lucide-react";
 import { TRACKS, todayISO } from "@/lib/data";
 import { cheerStudyLogged } from "@/lib/cheer";
 import { useStore } from "@/lib/store";
-import type { StudyEntry, TrackId } from "@/lib/types";
+import type { StudyEntry, TrackId, ViewId } from "@/lib/types";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -104,7 +104,7 @@ function CustomChartTooltip({ active, payload, label }: CustomTooltipProps) {
   );
 }
 
-export function LogView() {
+export function LogView({ go }: { go?: (v: ViewId) => void }) {
   const { study, addStudy, deleteStudy, exportStudyLog } = useStore();
   const [subject, setSubject] = useState("");
   const [track, setTrack] = useState<TrackId>("korean");
@@ -150,6 +150,20 @@ export function LogView() {
 
   return (
     <div className="space-y-6">
+      {go && (
+        <div className="flex items-center justify-between rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3">
+          <p className="text-xs font-semibold text-foreground">
+            Prefer real-time focus with ambient rain or white noise?
+          </p>
+          <button
+            onClick={() => go("focus")}
+            className="cursor-pointer text-xs font-bold text-primary hover:underline whitespace-nowrap ml-3"
+          >
+            Launch Focus Room (집중실) →
+          </button>
+        </div>
+      )}
+
       {/* Study Session Input Form */}
       <form
         onSubmit={(e) => {

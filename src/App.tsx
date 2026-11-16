@@ -1,7 +1,8 @@
-import { ListChecks, PiggyBank, Route as RouteIcon, ScrollText, Settings, Sun } from "lucide-react";
+import { ListChecks, PiggyBank, Route as RouteIcon, ScrollText, Settings, Sun, Timer } from "lucide-react";
 import { useState } from "react";
 import { Toaster } from "sonner";
 import { BackupBanner } from "@/components/BackupBanner";
+import { FocusView } from "@/components/FocusView";
 import { FundsView } from "@/components/FundsView";
 import { LogView } from "@/components/LogView";
 import { RoadmapView } from "@/components/RoadmapView";
@@ -13,10 +14,11 @@ import type { ViewId } from "@/lib/types";
 
 const VIEWS: { id: ViewId; num: string; label: string; icon: typeof Sun }[] = [
   { id: "today", num: "01", label: "Today", icon: Sun },
-  { id: "roadmap", num: "02", label: "Roadmap", icon: RouteIcon },
-  { id: "tasks", num: "03", label: "Tasks", icon: ListChecks },
-  { id: "log", num: "04", label: "Study log", icon: ScrollText },
-  { id: "funds", num: "05", label: "Funds", icon: PiggyBank },
+  { id: "focus", num: "02", label: "Focus", icon: Timer },
+  { id: "roadmap", num: "03", label: "Roadmap", icon: RouteIcon },
+  { id: "tasks", num: "04", label: "Tasks", icon: ListChecks },
+  { id: "log", num: "05", label: "Study log", icon: ScrollText },
+  { id: "funds", num: "06", label: "Funds", icon: PiggyBank },
 ];
 
 export default function App() {
@@ -44,7 +46,7 @@ export default function App() {
                   key={v.id}
                   onClick={() => setView(v.id)}
                   aria-current={view === v.id ? "page" : undefined}
-                  className={`cursor-pointer rounded-full px-4 py-2 text-sm font-bold transition-colors duration-200 ${
+                  className={`cursor-pointer rounded-full px-3.5 py-2 text-xs font-bold transition-colors duration-200 ${
                     view === v.id
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -72,9 +74,10 @@ export default function App() {
         <BackupBanner onOpenSettings={() => setSettingsOpen(true)} />
 
         {view === "today" && <TodayView go={setView} />}
+        {view === "focus" && <FocusView />}
         {view === "roadmap" && <RoadmapView />}
         {view === "tasks" && <TasksView />}
-        {view === "log" && <LogView />}
+        {view === "log" && <LogView go={setView} />}
         {view === "funds" && <FundsView />}
       </main>
 
@@ -99,7 +102,7 @@ export default function App() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Main mobile"
       >
-        <div className="mx-auto flex max-w-md items-stretch justify-between px-2">
+        <div className="mx-auto flex max-w-md items-stretch justify-between px-1">
           {VIEWS.map((v) => {
             const Icon = v.icon;
             const active = view === v.id;
@@ -108,12 +111,12 @@ export default function App() {
                 key={v.id}
                 onClick={() => setView(v.id)}
                 aria-current={active ? "page" : undefined}
-                className={`flex min-h-14 min-w-14 flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-bold uppercase tracking-wide transition-colors duration-200 ${
+                className={`flex min-h-14 min-w-11 flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-1.5 text-[9px] font-bold uppercase tracking-tight transition-colors duration-200 ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}
               >
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.6 : 2} />
-                {v.label}
+                <span className="truncate">{v.label}</span>
               </button>
             );
           })}
